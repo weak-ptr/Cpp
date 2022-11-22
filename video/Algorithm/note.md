@@ -27,3 +27,6 @@
     - function template will be raised error with message that **no instance of function name xxx or no matching function for call to xxx**, it means you need instance you template function.
     - class with template member function, maybe alway ok(not sure).
     - template class with template member function, maybe alway ok(not sure).
+
+- different between sequence container and associative container
+  - for *relationship algorithm* associative container have special version which more effective.

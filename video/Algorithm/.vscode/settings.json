@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "numeric": "cpp",
-        "*.tcc": "cpp"
+        "*.tcc": "cpp",
+        "array": "cpp"
     }
 }
