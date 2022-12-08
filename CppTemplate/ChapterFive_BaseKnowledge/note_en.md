@@ -68,6 +68,112 @@
 - summary
   - in template, using typename to explicit declaration that you are using type.
 
+##  Zero Initialization(built-int type initialization to zero(0, false, nullptr i.e))
+- why?
+  - if you template instance by built-in type(like int, pointer), we cann't use this type variable directly, because its value is undefined. so we hope have a machanism support us to init those type varaible.
+  - [TEST](Zero_Initialization.cpp)
+  - TEST Result:
+    - g++
+      - pass the compile process.
+      - in my machine, t1 = t2 = t3 = 0.
+
+    - MSVC
+      - compile error(C4700 - uninitialized local variable 't1' used)
+
+- How to?
+  - curly brack
+
+##  Templates for Raw Arrays and String Literals
+- references(the arguments don't decay)
+  - example
+    ```c++
+    template <typename T>
+    void PassByReference(T& str1, T& str2)
+    {
+      //  do something
+    }
+
+    template <typename T>
+    void PassByValue(T str1, T str2)
+    {
+
+    }
+
+    int main()
+    {
+      const char* str1 = "hello";
+      const char* str2 = "wondeful";
+
+      PassByReference("hello", "wondeful");               //  error: no matching function for call to 'func(const char [6], const char [9])'
+      PassByReference(str1, str2);                        // ok
+
+      PassByValue("hello", "wondeful");           //  ok
+      PassByValue(str1, str2);                    //  ok
+
+      return 0;
+    }
+    ```
+  
+- value(the types decay)
+
+- summary
+  - string literal have a specific type which include the size message.
+
+- STL
+  - less
+    ```c++
+    //  no-const version
+    template <typename T, int N, int M>
+    bool less(T(&a)[N], T(&b)[M])
+    {
+      for (int i = 0; i < N && i < M; ++i)
+      {
+        if (a[i] < b[i])
+          return true;
+        if (b[i] < a[i])
+          return false;
+      }
+      return N < M;
+    }
+
+    //  const version
+    template <int N, int M>
+    bool less(const char (&a)[N], const char (&b)[M])
+    {
+      for (int i = 0; i < N && i < M; ++i)
+      {
+        if (a[i] < b[i])
+          return true;
+        if (b[i] < a[i])
+          return false;
+      }
+
+      return N < M;
+    }
+    ```
+  - question
+    - why the argument of less need do &a then can be explain to address?
+    - i guess, when we pass a array to function, it received a array type. we need extract the address of it, then can get the first element address. then use the first address to rebuild to a new array type.
+
+  - the difference of pass by value and pass by reference in raw array(c-style)
+    - [function template](./PassRawArrayToFunctionTemplate.hpp)
+  
+    - [class template](./PassRawArrayToClassTemplate.hpp)
+
+  - the difference between bound and unknown bound
+    - [function template](./RawArrayBoundFunctionTemplate.hpp)
+  
+    - [class template](./RawArrayBoundFunctionTemplate.hpp)
+
+  - summary
+    - function priority(top -> low):
+      - reference bound
+      - reference unbound
+      - value bound
+      - value unbound
+      - pointer
+      
+
 ##  The Template Argument of Template
 ###  origin(history)
 - as we know, all template need **type** to instance. so there are a situation(like STL::container), we also need instance a type first, then regard this type as template argument. the C++ program think this is unnecessary.
